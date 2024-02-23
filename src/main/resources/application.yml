@@ -1,0 +1,25 @@
+spring:
+    jpa:
+        show-sql: ${SHOW_SQL:true}
+        open-in-view: ${OPEN_IN_VIEW:false}
+        hibernate:
+          ddl-auto: validate
+        properties:
+            hibernate:
+                jdbc:
+                    batch_size: 20
+                batch_versioned_data: true
+                order_inserts: true
+                order_updates: true
+                generate_statistics: ${HIBERNATE_GENERATE_STATISTICS:false}
+    datasource:
+        url: ${DATASOURCE_URL:jdbc:postgresql://localhost:5432/messagesDB}
+        username: ${DATASOURCE_USERNAME:nyos}
+        password: ${DATASOURCE_PASSWORD:purple}
+        driver-class-name: org.postgresql.Driver
+minio:
+    file-system-project:
+        props:
+           url: ${MINIO_URL:http://127.0.0.1:9090}
+           username: ${MINIO_USERNAME:nyos}
+           password: ${MINIO_PASSWORD:nyos7777}
