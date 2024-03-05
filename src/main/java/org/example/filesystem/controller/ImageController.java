@@ -6,10 +6,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.filesystem.dto.ImageDto;
 import org.example.filesystem.services.MinioService;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @Tag(name = "Сервис для получения аватарки")
 @RequiredArgsConstructor
@@ -18,21 +24,32 @@ import java.io.IOException;
 @Slf4j
 public class ImageController {
     private final MinioService minioService;
-    private String bucket = "Image";
+    private String bucket = "image";
     @GetMapping("/getImage")
     @Operation(description = "Метод для получения фото")
-    public byte[] downloadImage(@RequestParam String objectName) {
-        return minioService.downloadFromMinio(bucket, objectName);
+    public ResponseEntity<byte[]> downloadImage(@RequestParam("imageMinioName")  String imageNameMinio) {
+        byte[] imageData = minioService.downloadFromMinio(bucket, imageNameMinio);
+        log.info("Success download from minio");
+        // Установка HTTP заголовков
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_PNG);
+        headers.setContentDisposition(ContentDisposition.builder("attachment").filename(imageNameMinio).build());
+
+
+        return new ResponseEntity<>(imageData, headers, HttpStatus.OK);
     }
 
-    @PostMapping("/uploadImage")
-    @Operation(description = "Меод для добавления фото")
-    public void uploadImage(@RequestParam MultipartFile image){
+    @PostMapping(value = "/uploadImage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(description = "Метод для добавления фото")
+    public String uploadImage(@RequestPart("image") MultipartFile image){
+        UUID uuid = UUID.randomUUID();
+        String objectName = "minio_" + image.getOriginalFilename() + "_" + uuid;
         try {
-            minioService.uploadToMinio(bucket, "imageMinioName", image.getBytes());
+            minioService.uploadToMinio(bucket, objectName, image.getBytes());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        return objectName;
     }
 
     @DeleteMapping("/deleteImage")

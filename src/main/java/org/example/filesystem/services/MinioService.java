@@ -31,7 +31,7 @@ public class MinioService {
         }
     }
 
-    public void uploadToMinio(String bucketName, String objectName, byte[] data) {
+    public String uploadToMinio(String bucketName, String objectName, byte[] data) {
         try (ByteArrayInputStream bais = new ByteArrayInputStream(data)){
             createBucket(bucketName);
             ObjectWriteResponse response = minioClient.putObject(
@@ -46,6 +46,7 @@ public class MinioService {
             log.error("File upload to MinIO Error: {}", e.getMessage());
             // Обработка ошибок загрузки файла в MinIO
         }
+        return objectName;
     }
 
     public byte[] downloadFromMinio(String bucketName, String objectName) {
