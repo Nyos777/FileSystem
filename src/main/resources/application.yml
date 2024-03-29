@@ -27,6 +27,6 @@ spring:
 minio:
     file-system-project:
         props:
-            url: ${MINIO_URL:http://127.0.0.1:9000}
+            url: ${MINIO_URL:http://localhost:9000}
             username: ${MINIO_USERNAME:nyos}
             password: ${MINIO_PASSWORD:nyos7777}

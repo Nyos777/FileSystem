@@ -35,13 +35,12 @@ public class ImageController {
         headers.setContentType(MediaType.IMAGE_PNG);
         headers.setContentDisposition(ContentDisposition.builder("attachment").filename(imageNameMinio).build());
 
-
         return new ResponseEntity<>(imageData, headers, HttpStatus.OK);
     }
 
     @PostMapping(value = "/uploadImage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(description = "Метод для добавления фото")
-    public String uploadImage(@RequestPart("image") MultipartFile image){
+    public ResponseEntity<String> uploadImage(@RequestPart("image") MultipartFile image){
         UUID uuid = UUID.randomUUID();
         String objectName = "minio_" + image.getOriginalFilename() + "_" + uuid;
         try {
@@ -49,7 +48,7 @@ public class ImageController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return objectName;
+        return ResponseEntity.ok(objectName);
     }
 
     @DeleteMapping("/deleteImage")

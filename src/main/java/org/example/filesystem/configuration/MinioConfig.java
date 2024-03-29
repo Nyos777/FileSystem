@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 public class MinioConfig {
     private final MinioProperties minioProperties;
 
-    @Bean("minioClient")
+    @Bean
     public MinioClient minioClient() {
         return MinioClient.builder()
                         .endpoint(minioProperties.getUrl())
