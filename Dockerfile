@@ -4,4 +4,4 @@ WORKDIR app
 
 COPY target/FileSystem.jar .
 
-ENTRYPOINT ["java","-jar", "-Xms256m", "-Xmx2024m", "FileSystem.jar"]
+ENTRYPOINT ["java","-jar", "FileSystem.jar"]

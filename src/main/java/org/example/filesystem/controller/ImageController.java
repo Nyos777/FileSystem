@@ -34,7 +34,6 @@ public class ImageController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.IMAGE_PNG);
         headers.setContentDisposition(ContentDisposition.builder("attachment").filename(imageNameMinio).build());
-
         return new ResponseEntity<>(imageData, headers, HttpStatus.OK);
     }
 
@@ -55,5 +54,11 @@ public class ImageController {
     @Operation(description = "Метод для удаление фото")
     public void deleteImage(@RequestParam String objectName){
         minioService.deleteFromMinio(bucket, objectName);
+    }
+
+    @PostMapping("/jsonFeign")
+    @Operation(description = "Метод для получения JSON файла и отправка его же обратно")
+    public String sendJson(@RequestBody String jsonFile){
+        return "Received Json: \n" + jsonFile;
     }
 }
